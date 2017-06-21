@@ -42,8 +42,14 @@ class RLMClassInfo;
 // and RLMResults, and has a buffer to store strong references to the current
 // set of enumerated items
 @interface RLMFastEnumerator : NSObject
-- (instancetype)initWithCollection:(id<RLMFastEnumerable>)collection
-                      objectSchema:(RLMClassInfo&)objectSchema;
+- (instancetype)initWithList:(realm::List&)list
+                  collection:(id)collection
+                       realm:(RLMRealm *)realm
+                   classInfo:(RLMClassInfo&)info;
+- (instancetype)initWithResults:(realm::Results&)results
+                     collection:(id)collection
+                          realm:(RLMRealm *)realm
+                      classInfo:(RLMClassInfo&)info;
 
 // Detach this enumerator from the source collection. Must be called before the
 // source collection is changed.
@@ -71,5 +77,9 @@ RLMNotificationToken *RLMAddNotificationBlock(id objcCollection,
                                               Collection& collection,
                                               void (^block)(id, RLMCollectionChange *, NSError *),
                                               bool suppressInitialChange=false);
+
+template<typename Collection>
+NSArray *RLMCollectionValueForKey(Collection& collection, NSString *key,
+                                  RLMRealm *realm, RLMClassInfo& info);
 
 std::vector<std::pair<std::string, bool>> RLMSortDescriptorsToKeypathArray(NSArray<RLMSortDescriptor *> *properties);
